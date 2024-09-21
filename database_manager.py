@@ -44,5 +44,13 @@ class DatabaseManager():
             ]
         
         return json.dumps(books_list, indent=4)
+    
+
+    def avg_of_pages(self):
+        average = self.session.query(func.avg(Book.pages)).scalar()
+
+        return average
+    
+
 
 
