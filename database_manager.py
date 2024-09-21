@@ -89,6 +89,36 @@ class DatabaseManager():
         ]
 
         return json.dumps(authors_list, indent=4)
+    
+
+    def authors_with_more_then_three_book(self):
+        authors = (
+        self.session.query(
+            Author.id,
+            Author.first_name,
+            Author.last_name,
+            func.count(Book.id).label('book_count')
+        )
+        .join(Book, Author.id == Book.author_id)
+        .group_by(Author.id)
+        .having(func.count(Book.id) > 3)
+        .limit(5)
+        .all()
+        )
+
+        authors_list = [
+            {
+                'id': author.id,
+                'first_name': author.first_name,
+                'last_name': author.last_name,
+                'book_count': author.book_count
+            }
+            for author in authors
+        ]
+
+        return json.dumps(authors_list, indent=4)
+
+       
 
 
 

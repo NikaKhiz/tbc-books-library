@@ -11,6 +11,7 @@ def main():
     print(f'average of pages is : {db.avg_of_pages()}')
     print(f'youngest authors : {db.youngest_authors()}')
     print(f'authors without books : {db.authors_without_books()}')
+    print(f'authors with more then three book : {db.authors_with_more_then_three_book()}')
 
 if __name__ == '__main__':
     main()
