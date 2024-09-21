@@ -26,5 +26,6 @@ class Book(Base):
     category = Column(String, nullable=False)
     pages = Column(Integer, nullable=False)
     release_date = Column(Date, nullable=False)
+    author = relationship('Author', back_populates='books')
 
 
