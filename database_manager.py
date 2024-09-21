@@ -68,7 +68,28 @@ class DatabaseManager():
         ]
 
         return json.dumps(authors_list, indent=4)  
-    
+
+
+    def authors_without_books(self):
+        authors = (
+            self.session.query(Author)
+            .outerjoin(Book)
+            .filter(Book.id.is_(None))
+            .with_entities(Author.id, Author.first_name, Author.last_name)  
+            .all()
+        )
+
+        authors_list = [
+            {
+                'id': author.id,
+                'first_name': author.first_name,
+                'last_name': author.last_name
+            }
+            for author in authors
+        ]
+
+        return json.dumps(authors_list, indent=4)
+
 
 
 
