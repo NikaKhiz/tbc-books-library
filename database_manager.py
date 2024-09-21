@@ -41,7 +41,7 @@ class DatabaseManager():
                 'author_id': book.author_id
             }
             for book in books
-            ]
+        ]
         
         return json.dumps(books_list, indent=4)
     
@@ -50,6 +50,24 @@ class DatabaseManager():
         average = self.session.query(func.avg(Book.pages)).scalar()
 
         return average
+    
+
+    def youngest_authors(self):
+        max_birth_date = self.session.query(func.max(Author.birth_date)).scalar()
+        authors = self.session.query(Author).filter(Author.birth_date == max_birth_date).all()
+
+        authors_list = [
+            {
+                'id': author.id,
+                'first_name': author.first_name,
+                'last_name': author.last_name,
+                'country': author.country,
+                'birth_date': author.birth_date.isoformat()
+            }
+            for author in authors
+        ]
+
+        return json.dumps(authors_list, indent=4)  
     
 
 

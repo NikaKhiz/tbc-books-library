@@ -9,6 +9,7 @@ def main():
 
     print(f'books with most pages {db.books_with_most_pages()}')
     print(f'average of pages is : {db.avg_of_pages()}')
+    print(f'youngest authors : {db.youngest_authors()}')
 
 if __name__ == '__main__':
     main()
