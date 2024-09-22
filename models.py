@@ -15,7 +15,7 @@ class Author(Base):
     last_name = Column(String, nullable=False)
     country = Column(String, nullable=False)
     birth_date = Column(Date, nullable=False)
-    books = relationship('Book', back_populates='author', cascade='all, delete')
+    books = relationship('Book', secondary="author_book", back_populates='author', cascade='all, delete')
 
 
 class Book(Base):
@@ -26,6 +26,12 @@ class Book(Base):
     category = Column(String, nullable=False)
     pages = Column(Integer, nullable=False)
     release_date = Column(Date, nullable=False)
-    author = relationship('Author', back_populates='books')
+    author = relationship('Author', secondary="author_book", back_populates='books')
 
 
+# junction table for authors and books
+class AuthorBook(Base):
+    __tablename__ = 'author_book'
+    
+    author_id = Column(Integer, ForeignKey('author.id'), primary_key=True)
+    book_id = Column(Integer, ForeignKey('book.id'), primary_key=True)
