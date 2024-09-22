@@ -91,13 +91,17 @@ class DatabaseManager():
 
 
     def authors_without_books(self):
+        
         authors = (
             self.session.query(Author)
-            .outerjoin(Book)
-            .filter(Book.id.is_(None))
-            .with_entities(Author.id, Author.first_name, Author.last_name)  
+            .options(joinedload(Author.books))
             .all()
         )
+
+         # authors without books
+        authors_filtered = [
+            author for author in authors if len(author.books) == 0
+        ]
 
         authors_list = [
             {
@@ -105,7 +109,7 @@ class DatabaseManager():
                 'first_name': author.first_name,
                 'last_name': author.last_name
             }
-            for author in authors
+            for author in authors_filtered
         ]
 
         return json.dumps(authors_list, indent=4)
@@ -113,27 +117,25 @@ class DatabaseManager():
 
     def authors_with_more_then_three_book(self):
         authors = (
-        self.session.query(
-            Author.id,
-            Author.first_name,
-            Author.last_name,
-            func.count(Book.id).label('book_count')
+            self.session.query(Author)
+            .options(joinedload(Author.books))
+            .limit(5)
+            .all()
         )
-        .join(Book, Author.id == Book.author_id)
-        .group_by(Author.id)
-        .having(func.count(Book.id) > 3)
-        .limit(5)
-        .all()
-        )
+
+        # first 5 author with more than three books
+        authors_filtered = [
+            author for author in authors if len(author.books) > 3
+        ][:5]
 
         authors_list = [
             {
                 'id': author.id,
                 'first_name': author.first_name,
                 'last_name': author.last_name,
-                'book_count': author.book_count
+                'book_count': len(author.books)
             }
-            for author in authors
+            for author in authors_filtered
         ]
 
         return json.dumps(authors_list, indent=4)
@@ -146,7 +148,7 @@ class DatabaseManager():
                 {
                     'id': book.id,
                     'title': book.title,
-                    'author': [
+                    'authors': [
                         {
                             'first_name': author.first_name,
                             'last_name': author.last_name
@@ -159,10 +161,3 @@ class DatabaseManager():
         random_books = random.sample(books_list, min(5, len(books_list)))
 
         return json.dumps(random_books, indent=4)
-
-
-       
-
-
-
-
