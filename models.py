@@ -3,7 +3,7 @@ from sqlalchemy.orm import declarative_base, relationship
 
 
 db_url = 'sqlite:///library.db' 
-engine = create_engine(db_url, echo=True)
+engine = create_engine(db_url)
 Base = declarative_base()
 
 
